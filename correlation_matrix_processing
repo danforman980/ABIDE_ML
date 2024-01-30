@@ -1,0 +1,26 @@
+import numpy as np
+import pandas as pd
+from nilearn.connectome import ConnectivityMeasure
+from sklearn.decomposition import PCA
+from nilearn.connectome import sym_matrix_to_vec
+import os
+
+
+directory = r'C:\rois_cc400_CPAC'
+
+i = 0
+for filename in os.listdir(directory):
+    z = os.path.join(directory, filename)
+    ext = os.path.splitext(filename)[-1].lower()
+    if filename.startswith('1') or filename.startswith('2'):                            
+        df = pd.read_csv(filename, index_col = 0)
+        diagnosis = []
+        
+        dfn = df.to_numpy()
+        
+        cor_mea = ConnectivityMeasure(kind="correlation")
+        cor_mat = cor_mea.fit_transform([dfn])[0]
+            
+        filemat = pd.DataFrame(cor_mat)
+
+        filemat.to_csv(r'C:\rois_cc400_CPAC\data\\' + filename)
